@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        outline: 0;
+        box-sizing: border-box;
+    }
+
+    html, body, #root {
+        height: 100%;
+    }
+
+    body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    body, input, button {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+          sans-serif;
+    }
+
+    #messages {
+      height: 600px; 
+      overflow: scroll;
+    }
+
+    #username {
+      width: 100%;
+    }
+
+    #message {
+      width: 100%;
+    }
+
+    #send {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chat</h1>
+  <div id="messages"></div>
+  <form action="">
+    <input type="text" id="username" placeholder="Username"/>
+    <input type="text" id="message" placeholder="Enter a message"/>
+    <button id="send" title="Send" type="submit">Send</button>
+  </form>
+
+  <script>
+    (function() {
+      let ws = null;
+
+      const messages = document.querySelector('#messages');
+      const username = document.querySelector('#username');
+      const message = document.querySelector('#message');
+      const send = document.querySelector('#send');
+      let color = null;
+      
+      const connected = () => {
+        console.log('Connected!');
+        color = '#'+Math.floor(Math.random()*16777215).toString(16);
+        messages.innerHTML = '';
+      };
+
+      const receiveMessage = (data) => {
+        console.log('Receiving message...');
+        let [ messageText, messageColor ] = data.split('|');
+
+        let p = document.createRange().createContextualFragment(messageText);
+        if (messageColor) {
+          p.querySelector('p').style.color = messageColor;
+        }
+        
+        messages.appendChild(p);
+        messages.scrollTop = messages.scrollHeight;
+      };
+
+      const quit = (event) => {
+        console.log('Exiting chat', event);
+
+        setTimeout(() => {
+          connect();
+        }, 1000);
+      }
+
+      const error = (event) => {
+        console.error('Error', event);
+
+        if (ws) {
+          ws.close();
+        }
+      };
+
+      const connect = () => {
+        console.log('Connecting...');
+        
+        if (ws) {
+          ws.onerror = ws.onopen = ws.onclose = null;
+          ws.close();
+        }
+
+        ws = new WebSocket('ws://localhost:3000/chat');
+        ws.onopen = () => connected();
+        ws.onmessage = ({ data }) => receiveMessage(data);
+        ws.onclose = (event) => quit(event);
+        ws.onerror = (event) => error(event);
+      };
+
+      send.onclick = (e) => {
+        e.preventDefault();
+
+        if (!username.value) {
+          alert('Type an username!');
+          return;
+        }
+
+        if (!message.value) {
+          message.focus();
+          return;
+        }
+
+        if (!ws) {
+          receiveMessage('<p>No websocket connection!</p>');
+          return;
+        }
+
+        console.log('Sending message...');
+        ws.send(`<p><strong>${username.value}</strong>: ${message.value}</p>|${color}`);
+
+        message.value = '';
+        message.focus();
+      };
+
+      connect();
+    })();
+  </script>
+</body>
+</html>
