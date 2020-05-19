@@ -1,6 +1,8 @@
 # Learning Deno
 
-<img src="https://deno.land/logo.svg" alt="Deno logo" width="450"/>
+<h1 align="center">
+  <img src="https://deno.land/logo.svg" alt="Deno logo" width="450"/>
+</h1>
 
 - [x] What is it?
 
@@ -82,8 +84,17 @@ $ deno run --unstable --allow-net --allow-env --allow-read main.ts
 ```
 Open more than one private/incognito window to test it.
 
-- [ ] Using a file watcher
-  - have a look at denon
+- [x] Using a file watcher
+
+Install with:
+
+```bash
+$ deno install -Af --unstable https://deno.land/x/denon/denon.ts
+$ denon -h
+$ cd file-watcher
+$ denon
+```  
+Find some file in `file-watcher` directory to change while the `denon` is running.
 
 - [ ] Create a sample web application
   - [ ] Pokemon API
