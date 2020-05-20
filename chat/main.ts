@@ -6,7 +6,6 @@ import {
   HttpMethod,
   HttpStatus,
   MediaType,
-  readFileStrSync,
   acceptWebSocket,
   isWebSocketCloseEvent,
   WebSocket,
@@ -72,7 +71,7 @@ const serveIndexPage = (request: ServerRequest) => {
     headers : new Headers({
       'Content-Type': MediaType.TEXT_HTML,
     }),
-    body: readFileStrSync('./index.html'),
+    body: Deno.readFileSync('./index.html'),
   });
 };
 

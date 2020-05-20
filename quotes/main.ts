@@ -2,14 +2,15 @@ import {
   bgCyan, 
   white, 
   bold, 
-  italic, 
-  readJson } from './deps.ts';
+  italic } from './deps.ts';
+
+const decoder = new TextDecoder("utf-8");
 
 let quotes = null;
 try {
-  quotes = await readJson('./quotes/quotes.json') as any[];
+  quotes = JSON.parse( decoder.decode( await Deno.readFile('./quotes/quotes.json') ) );
 } catch(error) {
-  quotes = await readJson('./quotes.json') as any[];
+  quotes = JSON.parse( decoder.decode( await Deno.readFile('./quotes.json') ) );
 }
 
 const rand = quotes[Math.floor(Math.random() * quotes.length)]
