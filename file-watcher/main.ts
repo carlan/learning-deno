@@ -1,7 +1,6 @@
 import { 
   listenAndServe, 
   ServerRequest,
-  readFileStrSync,
 } from './deps.ts';
 
 const PORT = 3000;
@@ -12,7 +11,7 @@ const serveIndexPage = (request: ServerRequest) => {
     headers : new Headers({
       'Content-Type': 'text/html',
     }),
-    body: readFileStrSync('./public/index.html'),
+    body: Deno.readFileSync('./public/index.html'),
   });
 };
 

@@ -89,10 +89,10 @@ Open more than one private/incognito window to test it.
 Install with:
 
 ```bash
-$ deno install -Af --unstable https://deno.land/x/denon/denon.ts
+$ deno install --allow-read --allow-run --allow-write -f --unstable https://deno.land/x/denon/denon.ts
 $ denon -h
 $ cd file-watcher
-$ denon
+$ denon start
 ```  
 Find some file in `file-watcher` directory to change while the `denon` is running.
 
